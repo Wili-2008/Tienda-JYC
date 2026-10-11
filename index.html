@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183a35">
+  <meta name="description" content="Catálogo digital de calzados y chinelas de Tienda J Y C. Consulta tallas y precios y prepara tu pedido por WhatsApp.">
+  <title>Tienda J Y C | Catálogo de calzados</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #183a35;
+      --muted: #64736e;
+      --brand: #216b5b;
+      --brand-dark: #174f44;
+      --accent: #f3b544;
+      --paper: #f7f8f3;
+      --line: #e3e9e3;
+      --white: #fff;
+      --shadow: 0 12px 30px rgb(24 58 53 / 8%);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, select, input { font: inherit; }
+    button { cursor: pointer; }
+    .wrap { width: min(1200px, calc(100% - 32px)); margin-inline: auto; }
+    .topbar {
+      position: sticky;
+      z-index: 5;
+      top: 0;
+      background: rgb(247 248 243 / 94%);
+      border-bottom: 1px solid rgb(227 233 227 / 85%);
+      backdrop-filter: blur(12px);
+    }
+    .topbar-inner { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; }
+    .brand-mark {
+      display: grid;
+      width: 43px;
+      height: 43px;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--ink);
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: -.06em;
+    }
+    .brand-name { display: block; font-size: 17px; font-weight: 850; line-height: 1.1; }
+    .brand-caption { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .cart-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 43px;
+      padding: 0 15px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--ink);
+      color: white;
+      font-weight: 750;
+    }
+    .cart-count { display: grid; min-width: 23px; height: 23px; padding: 0 5px; place-items: center; border-radius: 999px; background: var(--accent); color: var(--ink); font-size: 12px; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      margin-top: 25px;
+      padding: clamp(30px, 6vw, 68px);
+      border-radius: 30px;
+      background: var(--ink);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      position: absolute;
+      right: -80px;
+      bottom: -180px;
+      width: 390px;
+      height: 390px;
+      border: 1px solid rgb(255 255 255 / 12%);
+      border-radius: 50%;
+      box-shadow: 0 0 0 35px rgb(255 255 255 / 3%), 0 0 0 75px rgb(255 255 255 / 3%);
+      content: "";
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 690px; }
+    .eyebrow { margin: 0 0 12px; color: var(--accent); font-size: 12px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    h1 { max-width: 640px; margin: 0; font-size: clamp(34px, 6vw, 62px); letter-spacing: -.055em; line-height: 1.04; }
+    .hero p:not(.eyebrow) { max-width: 520px; margin: 17px 0 0; color: #d4e2dc; font-size: 16px; line-height: 1.65; }
+    .hero-note { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; color: #fff; font-size: 13px; font-weight: 700; }
+    .hero-note::before { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); content: ""; }
+    main { padding: 40px 0 70px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 21px; }
+    .section-heading h2 { margin: 0; font-size: clamp(25px, 4vw, 34px); letter-spacing: -.04em; }
+    .section-heading p { margin: 7px 0 0; color: var(--muted); font-size: 14px; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      clip-path: inset(50%);
+    }
+    .filter-label { display: block; margin-bottom: 10px; font-size: 12px; font-weight: 800; }
+    .search-label { display: block; margin: 18px 0 8px; font-size: 12px; font-weight: 800; }
+    .code-search {
+      width: min(100%, 360px);
+      min-height: 43px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: white;
+      color: var(--ink);
+      outline-color: var(--brand);
+    }
+    .filters { display: flex; gap: 8px; padding-bottom: 6px; overflow-x: auto; scrollbar-width: thin; }
+    .filter-button {
+      flex: 0 0 auto;
+      min-height: 39px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: white;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .filter-button[aria-pressed="true"] { border-color: var(--brand); background: var(--brand); color: white; }
+    .catalog-meta { display: flex; justify-content: space-between; gap: 12px; margin: 15px 0 14px; color: var(--muted); font-size: 13px; }
+    .product-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+    .product-card {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background: white;
+      box-shadow: 0 4px 14px rgb(24 58 53 / 3%);
+    }
+    .photo-frame {
+      position: relative;
+      display: grid;
+      aspect-ratio: 1 / 1;
+      place-items: center;
+      overflow: hidden;
+      background: #f1f4ef;
+    }
+    .photo-frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .photo-placeholder { display: none; padding: 18px; color: var(--muted); font-size: 13px; text-align: center; }
+    .photo-frame.image-missing .photo-placeholder { display: block; }
+    .photo-frame.image-missing img { display: none; }
+    .product-code {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 6px 9px;
+      border: 1px solid rgb(255 255 255 / 75%);
+      border-radius: 999px;
+      background: rgb(255 255 255 / 92%);
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 850;
+    }
+    .product-info { padding: 13px; }
+    .size-line { min-height: 19px; margin: 0 0 10px; color: var(--muted); font-size: 12px; }
+    .size-line strong { color: var(--ink); }
+    .prices { display: grid; gap: 7px; margin-bottom: 13px; }
+    .price-row { display: flex; align-items: baseline; justify-content: space-between; gap: 5px; font-size: 11px; }
+    .price-row span { color: var(--muted); }
+    .price-row strong { white-space: nowrap; color: var(--ink); font-size: 14px; }
+    .price-row.primary strong { color: var(--brand-dark); }
+    .price-note { margin: -5px 0 13px; color: #7d8984; font-size: 10px; line-height: 1.4; }
+    .buy-controls { display: grid; grid-template-columns: minmax(0, 1fr) 66px; gap: 7px; }
+    .buy-controls select, .buy-controls input {
+      width: 100%;
+      min-width: 0;
+      height: 39px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: white;
+      color: var(--ink);
+      font-size: 12px;
+    }
+    .add-button {
+      width: 100%;
+      min-height: 40px;
+      margin-top: 8px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--brand);
+      color: white;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .add-button:hover, .cart-trigger:hover, .whatsapp-button:hover { filter: brightness(.94); }
+    .more-wrap { display: flex; justify-content: center; margin-top: 25px; }
+    .secondary-button {
+      min-height: 44px;
+      padding: 0 20px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: white;
+      color: var(--ink);
+      font-weight: 750;
+    }
+    .empty-results { grid-column: 1 / -1; padding: 35px 18px; border: 1px dashed #bac8bf; border-radius: 16px; color: var(--muted); text-align: center; }
+    footer { padding: 25px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 16px; }
+    .footer-inner p { margin: 0; }
+    .overlay { position: fixed; z-index: 9; inset: 0; background: rgb(13 32 29 / 48%); }
+    .cart-panel {
+      position: fixed;
+      z-index: 10;
+      top: 0;
+      right: 0;
+      display: flex;
+      width: min(460px, 100%);
+      height: 100dvh;
+      flex-direction: column;
+      background: var(--paper);
+      box-shadow: -16px 0 45px rgb(0 0 0 / 14%);
+    }
+    [hidden] { display: none !important; }
+    .cart-head { display: flex; align-items: center; justify-content: space-between; padding: 20px; border-bottom: 1px solid var(--line); background: white; }
+    .cart-head h2 { margin: 0; font-size: 22px; }
+    .icon-button { display: grid; width: 39px; height: 39px; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: white; color: var(--ink); font-size: 20px; }
+    .cart-items { flex: 1; overflow-y: auto; padding: 16px 18px; }
+    .cart-empty { margin: 28px 0; color: var(--muted); line-height: 1.6; text-align: center; }
+    .cart-line { margin-bottom: 11px; padding: 14px; border: 1px solid var(--line); border-radius: 15px; background: white; }
+    .cart-line-top { display: flex; justify-content: space-between; gap: 10px; }
+    .cart-line h3 { margin: 0; font-size: 15px; }
+    .cart-line-details { margin: 6px 0 10px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .cart-line-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .cart-quantity { width: 72px; height: 34px; padding: 0 8px; border: 1px solid var(--line); border-radius: 8px; }
+    .remove-button { padding: 5px 0; border: 0; background: transparent; color: #a13d35; font-size: 12px; font-weight: 700; }
+    .cart-footer { padding: 18px 20px calc(18px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: white; }
+    .cart-total { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 18px; font-weight: 850; }
+    .cart-pairs { margin-bottom: 14px; color: var(--muted); font-size: 12px; }
+    .whatsapp-button { display: flex; width: 100%; min-height: 49px; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 12px; background: #1e8e54; color: white; font-weight: 850; text-decoration: none; }
+    .cart-disclaimer { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; text-align: center; }
+    .toast { position: fixed; z-index: 20; right: 16px; bottom: 16px; max-width: min(420px, calc(100% - 32px)); padding: 13px 17px; border-radius: 12px; background: var(--ink); color: white; box-shadow: var(--shadow); font-size: 13px; }
+    body.cart-open { overflow: hidden; }
+    @media (min-width: 650px) {
+      .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
+      .product-info { padding: 15px; }
+      .price-row { font-size: 12px; }
+    }
+    @media (min-width: 950px) {
+      .product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 19px; }
+      .hero { margin-top: 32px; }
+    }
+    @media (min-width: 1180px) { .product-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+    @media (max-width: 430px) {
+      .wrap { width: min(100% - 22px, 1200px); }
+      .topbar-inner { min-height: 64px; }
+      .cart-trigger { min-height: 40px; padding: 0 11px; font-size: 13px; }
+      .hero { margin-top: 14px; border-radius: 23px; }
+      main { padding-top: 30px; }
+      .product-grid { gap: 9px; }
+      .product-card { border-radius: 15px; }
+      .product-info { padding: 10px; }
+      .product-code { top: 7px; left: 7px; padding: 5px 7px; font-size: 10px; }
+      .buy-controls { grid-template-columns: minmax(0, 1fr) 54px; gap: 5px; }
+      .buy-controls select, .buy-controls input { padding: 0 5px; font-size: 11px; }
+      .price-row strong { font-size: 13px; }
+      .footer-inner { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#" aria-label="Tienda J Y C, inicio">
+        <span class="brand-mark" aria-hidden="true">JYC</span>
+        <span><span class="brand-name">Tienda J Y C</span><span class="brand-caption">Calzados y chinelas</span></span>
+      </a>
+      <button class="cart-trigger" id="open-cart" type="button" aria-haspopup="dialog" aria-controls="cart-panel">
+        <span aria-hidden="true">🛒</span> Mi pedido <span class="cart-count" id="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <p class="eyebrow">Catálogo digital</p>
+        <h1 id="hero-title">Encuentra tu próximo par.</h1>
+        <p>Explora nuestros modelos, revisa las tallas y elige la presentación que necesitas. Tu pedido se prepara para enviarlo por WhatsApp.</p>
+        <span class="hero-note">Precios de referencia por docena y media docena</span>
+      </div>
+    </section>
+  </div>
+
+  <main class="wrap" id="catalogo">
+    <section aria-labelledby="catalog-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="catalog-title">Catálogo de calzados</h2>
+          <p>Elige un modelo para ver sus tallas y precios.</p>
+        </div>
+      </div>
+      <span class="filter-label">Filtrar por precio de docena</span>
+      <div class="filters" id="filters" role="group" aria-label="Filtrar productos por precio de docena">
+        <button class="filter-button" type="button" data-filter="all" aria-pressed="true">Todos</button>
+        <button class="filter-button" type="button" data-filter="300-600" aria-pressed="false">Más de Bs 300–600</button>
+        <button class="filter-button" type="button" data-filter="600-900" aria-pressed="false">Más de Bs 600–900</button>
+        <button class="filter-button" type="button" data-filter="over-900" aria-pressed="false">Más de Bs 900</button>
+      </div>
+      <label class="search-label" for="code-search">Buscar modelo por código</label>
+      <input class="code-search" id="code-search" type="search" placeholder="Ejemplo: CJ-001" autocomplete="off" spellcheck="false">
+      <div class="catalog-meta">
+        <span id="result-count" aria-live="polite"></span>
+        <span>Precios en bolivianos (Bs)</span>
+      </div>
+      <div class="product-grid" id="product-grid"></div>
+      <div class="more-wrap">
+        <button class="secondary-button" id="show-more" type="button">Ver más modelos</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <p><strong>Tienda J Y C</strong> · Catálogo de calzados y chinelas</p>
+      <p>Pedidos preparados por WhatsApp. Disponibilidad y entrega sujetas a confirmación del negocio.</p>
+    </div>
+  </footer>
+
+  <div class="overlay" id="cart-overlay" hidden></div>
+  <aside class="cart-panel" id="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
+    <div class="cart-head">
+      <h2 id="cart-title">Tu pedido</h2>
+      <button class="icon-button" id="close-cart" type="button" aria-label="Cerrar carrito">×</button>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total"><span>Total estimado</span><span id="cart-total">Bs 0</span></div>
+      <div class="cart-pairs" id="cart-pairs">0 pares en total</div>
+      <a class="whatsapp-button" id="whatsapp-link" href="#" target="_blank" rel="noopener noreferrer" aria-label="Preparar pedido en WhatsApp">
+        <span aria-hidden="true">●</span> Finalizar pedido por WhatsApp
+      </a>
+      <p class="cart-disclaimer">El pedido solo se envía cuando lo confirmes en WhatsApp. La disponibilidad y el precio final deben ser confirmados por la tienda.</p>
+    </div>
+  </aside>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>
+    "use strict";
+
+    // Número internacional de Bolivia (591 + número local), sin "+" ni espacios.
+    const WHATSAPP_NUMBER = "59175510580";
+    const PAGE_SIZE = 20;
+    const CART_STORAGE_KEY = "tienda-jyc-carrito-v1";
+
+    // Las fotografías están en la misma carpeta que este index.html.
+    const PRODUCT_FILES = [
+      "25_al_35_a_620bs.jpeg",
+      "25_al_35__a_680bs.jpeg",
+      "25_al_35___a__680bs.jpeg",
+      "25__al_35__a_680bs.jpeg",
+      "25__al_35__a__680bs.jpeg",
+      "25___al_35__a__620bs.jpeg",
+      "30_35_a_380bs.jpeg",
+      "30_35_a_540bs.jpeg",
+      "30_35_A_680bs.jpeg",
+      "30_35_a___540bsjpeg.jpeg",
+      "30__35_a_480bs.jpeg",
+      "30__35_a_680bs.jpeg",
+      "30__35_a__480bs.jpeg",
+      "30__35__a_360__bs.jpeg",
+      "36---41 a 440bs.jpeg",
+      "36---41 a 620bs.jpeg",
+      "36---41 a 720bs.jpeg",
+      "36---41a 720bs.jpeg",
+      "36--39 a 460bs.jpeg",
+      "36--41 a 1.050bs.jpeg",
+      "36--41 a 460bs.jpeg",
+      "36--41 a 720bs.jpeg",
+      "36--41 a 750bs.jpeg",
+      "36--41 a 800bs.jpeg",
+      "36--41 a e 720bs.jpeg",
+      "36--41. A 680bsjpeg.jpeg",
+      "36--41_a 480bs.jpeg",
+      "36-41 a 1.050bs plataforma alta.jpeg",
+      "36-41 a 600bsjpeg.jpeg",
+      "36-41 a 680bs.jpeg",
+      "36-41 a 720bs.jpeg",
+      "36-41_a_580bs.jpeg",
+      "36_39a460bsjpeg.jpeg",
+      "36_39_a_420bs.jpeg",
+      "36_39_a_640bs.jpeg",
+      "36_41_460bs.jpeg",
+      "36_41_a_1.050bs.jpeg",
+      "36_41_a_420bs.jpeg",
+      "36_41_a_640bs.jpeg",
+      "36_41_a__1.050bs.jpeg",
+      "36_41_a__480bs.jpeg",
+      "36_41_a___700bs.jpeg",
+      "36_41_a___720bs.jpeg",
+      "36_41__a__460bs.jpeg",
+      "36_41__a__720bz.jpeg",
+      "36_41__a___460bs.jpeg",
+      "36__39 a 460bs.jpeg",
+      "36__40__a__460bs.jpeg",
+      "36__41 a 420bs.jpeg",
+      "36__41 a_900bs.jpeg",
+      "36__41a 840bs.jpeg",
+      "36__41[__a__680bs.jpeg",
+      "36__41_a _1.050bs.jpeg",
+      "36__41_a_1.040bs.jpeg",
+      "36__41_a_1.050bs.jpeg",
+      "36__41_a_640bs.jpeg",
+      "36__41_a_700bs.jpeg",
+      "36__41_a__640bs.jpeg",
+      "36__41_a__700bs.jpeg",
+      "36__41_a—840bs__en_caja.jpeg",
+      "36__41__a_600bs.jpeg",
+      "36__41__a_640bs.jpeg",
+      "36__41__a_700bs.jpeg",
+      "36__41__a__460bs.jpeg",
+      "36__41__a__600bs.jpeg",
+      "36__41__a__640bs.jpeg",
+      "36__41___a__700bs.jpeg",
+      "36___41_a_780bs.jpeg",
+      "36___41__a__700bs.jpeg",
+      "37_41_a_640bs_puro_negrojpeg.jpeg",
+      "39_44 _a__650bs.jpeg",
+      "40_45_a_1.040bs.jpeg",
+      "40_45_a_440bs.jpeg",
+      "40_45_a_720bs.jpeg",
+      "40_45_a_750bs.jpeg",
+      "40_45_a_780bs.jpeg",
+      "40_45_a_800bs.jpeg",
+      "40_45_a_800bs_en_caja.jpeg",
+      "40_45_a_840bs.jpeg",
+      "40_45_a__580bs.jpeg",
+      "40_45_a__760bs.jpeg",
+      "40_45_a__800bs.jpeg",
+      "40_45_a___800bs.jpeg",
+      "40_45_crocs_a_850.jpeg",
+      "40_45__a_750bs.jpeg",
+      "40_45__a_760bs.jpeg",
+      "40__45_840bs.jpeg",
+      "40__45__a__780bs.jpeg",
+      "40__45__a__840bs.jpeg",
+      "40__45__a___480bs.jpeg",
+      "40__45__a___840bs.jpeg",
+      "41_46_a_440bs.jpeg",
+      "41_46_a_840bs.jpeg",
+      "41_46_a__440bsjpeg.jpeg",
+      "41_46_a__580bs.jpeg",
+      "41_46__a_440.jpeg",
+      "41_46__a_440bs.jpeg",
+      "41___46__a___440bs.jpeg"
+    ];
+
+    const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[char]);
+    const formatBs = (amount) => `Bs ${new Intl.NumberFormat("es-BO", {
+      maximumFractionDigits: 2
+    }).format(amount)}`;
+
+    function productFromFilename(filename, index) {
+      const stem = filename.replace(/\.[^.]+$/, "");
+      const sizeParts = stem.match(/\d+/g) || [];
+      const priceMatches = [...stem.matchAll(/(\d{1,3}(?:\.\d{3})+|\d{2,4})\s*(?:bs)?/gi)];
+      const rawPrice = priceMatches.at(-1)?.[1];
+      const priceDozen = rawPrice ? Number(rawPrice.replace(/\./g, "")) : NaN;
+      if (sizeParts.length < 2 || !Number.isFinite(priceDozen)) {
+        console.error(`No se pudieron leer tallas o precio del archivo: ${filename}`);
+        return null;
+      }
+      return {
+        id: `CJ-${String(index + 1).padStart(3, "0")}`,
+        file: filename,
+        sizeFrom: Number(sizeParts[0]),
+        sizeTo: Number(sizeParts[1]),
+        priceDozen
+      };
+    }
+
+    const PRODUCTS = PRODUCT_FILES.map(productFromFilename).filter(Boolean);
+    const productById = new Map(PRODUCTS.map((product) => [product.id, product]));
+    const grid = document.getElementById("product-grid");
+    const resultCount = document.getElementById("result-count");
+    const showMoreButton = document.getElementById("show-more");
+    const cartItemsElement = document.getElementById("cart-items");
+    const cartCountElement = document.getElementById("cart-count");
+    const cartTotalElement = document.getElementById("cart-total");
+    const cartPairsElement = document.getElementById("cart-pairs");
+    const whatsappLink = document.getElementById("whatsapp-link");
+    const cartPanel = document.getElementById("cart-panel");
+    const cartOverlay = document.getElementById("cart-overlay");
+    const toast = document.getElementById("toast");
+    let currentFilter = "all";
+    let codeQuery = "";
+    let visibleLimit = PAGE_SIZE;
+    let toastTimeout;
+    let cart = loadCart();
+
+    function loadCart() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || "[]");
+        if (!Array.isArray(stored)) throw new Error("El formato guardado no es una lista.");
+        return stored.filter((line) =>
+          line && productById.has(line.productId) &&
+          ["half", "dozen"].includes(line.presentation) &&
+          Number.isInteger(line.quantity) && line.quantity > 0
+        );
+      } catch (error) {
+        console.error("No se pudo recuperar el carrito guardado.", error);
+        showToast("No se pudo recuperar el carrito anterior; puedes continuar con un pedido nuevo.");
+        return [];
+      }
+    }
+
+    function saveCart() {
+      try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      } catch (error) {
+        console.error("No se pudo guardar el carrito en este navegador.", error);
+        showToast("No se pudo guardar el carrito en este navegador. El pedido sigue disponible mientras esta página permanezca abierta.");
+      }
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.hidden = false;
+      window.clearTimeout(toastTimeout);
+      toastTimeout = window.setTimeout(() => { toast.hidden = true; }, 4200);
+    }
+
+    function matchesFilter(product) {
+      const price = product.priceDozen;
+      if (codeQuery && !product.id.includes(codeQuery)) return false;
+      if (currentFilter === "under-300") return price <= 300;
+      if (currentFilter === "300-600") return price > 300 && price <= 600;
+      if (currentFilter === "600-900") return price > 600 && price <= 900;
+      if (currentFilter === "over-900") return price > 900;
+      return true;
+    }
+
+    function productCard(product) {
+      const halfPrice = product.priceDozen / 2;
+      const imagePath = encodeURIComponent(product.file);
+      return `
+        <article class="product-card">
+          <div class="photo-frame">
+            <img src="${imagePath}" alt="Fotografía del calzado ${escapeHtml(product.id)}, tallas ${product.sizeFrom} a ${product.sizeTo}" loading="lazy" decoding="async">
+            <span class="product-code">${escapeHtml(product.id)}</span>
+            <span class="photo-placeholder" aria-hidden="true">Fotografía no disponible</span>
+          </div>
+          <div class="product-info">
+            <p class="size-line">Tallas: <strong>${product.sizeFrom}–${product.sizeTo}</strong></p>
+            <div class="prices">
+              <div class="price-row"><span>Media docena</span><strong>${formatBs(halfPrice)}</strong></div>
+              <div class="price-row primary"><span>Docena</span><strong>${formatBs(product.priceDozen)}</strong></div>
+            </div>
+            <p class="price-note">La media docena se calcula como la mitad del precio por docena.</p>
+            <div class="buy-controls">
+              <label>
+                <span class="sr-only">Presentación para ${escapeHtml(product.id)}</span>
+                <select data-presentation="${product.id}" aria-label="Presentación para ${escapeHtml(product.id)}">
+                  <option value="half">Media docena</option>
+                  <option value="dozen">Docena</option>
+                </select>
+              </label>
+              <label>
+                <span class="sr-only">Cantidad de paquetes para ${escapeHtml(product.id)}</span>
+                <input data-quantity="${product.id}" type="number" min="1" max="99" value="1" inputmode="numeric" aria-label="Cantidad de paquetes para ${escapeHtml(product.id)}">
+              </label>
+            </div>
+            <button class="add-button" type="button" data-add="${product.id}">Añadir al carrito</button>
+          </div>
+        </article>`;
+    }
+
+    function renderProducts() {
+      const filtered = PRODUCTS.filter(matchesFilter);
+      const visible = filtered.slice(0, visibleLimit);
+      grid.innerHTML = visible.length
+        ? visible.map(productCard).join("")
+        : '<p class="empty-results">No hay modelos en este rango de precio.</p>';
+      resultCount.textContent = `${filtered.length} ${filtered.length === 1 ? "modelo" : "modelos"}`;
+      showMoreButton.hidden = visible.length >= filtered.length;
+    }
+
+    function getPrice(product, presentation) {
+      return presentation === "half" ? product.priceDozen / 2 : product.priceDozen;
+    }
+
+    function renderCart() {
+      let total = 0;
+      let totalPairs = 0;
+      const itemCount = cart.reduce((sum, line) => sum + line.quantity, 0);
+      cartCountElement.textContent = String(itemCount);
+      cartCountElement.setAttribute("aria-label", `${itemCount} paquetes en el carrito`);
+
+      if (!cart.length) {
+        cartItemsElement.innerHTML = '<p class="cart-empty">Tu carrito está vacío.<br>Vuelve al catálogo para elegir modelos.</p>';
+      } else {
+        cartItemsElement.innerHTML = cart.map((line, index) => {
+          const product = productById.get(line.productId);
+          const packagePairs = line.presentation === "half" ? 6 : 12;
+          const unitPrice = getPrice(product, line.presentation);
+          const subtotal = unitPrice * line.quantity;
+          total += subtotal;
+          totalPairs += packagePairs * line.quantity;
+          const presentationLabel = line.presentation === "half" ? "media docena (6 pares)" : "docena (12 pares)";
+          return `
+            <article class="cart-line">
+              <div class="cart-line-top">
+                <h3>${escapeHtml(product.id)} <span aria-label="tallas">· ${product.sizeFrom}–${product.sizeTo}</span></h3>
+                <strong>${formatBs(subtotal)}</strong>
+              </div>
+              <p class="cart-line-details">${presentationLabel} · ${formatBs(unitPrice)} por paquete<br>${line.quantity} ${line.quantity === 1 ? "paquete" : "paquetes"} · Subtotal: ${formatBs(subtotal)}</p>
+              <div class="cart-line-bottom">
+                <label>Cantidad <input class="cart-quantity" type="number" min="1" max="99" value="${line.quantity}" data-cart-quantity="${index}" aria-label="Cantidad de paquetes de ${escapeHtml(product.id)}"></label>
+                <button class="remove-button" type="button" data-remove="${index}">Quitar</button>
+              </div>
+            </article>`;
+        }).join("");
+      }
+
+      total = cart.reduce((sum, line) => {
+        const product = productById.get(line.productId);
+        return sum + getPrice(product, line.presentation) * line.quantity;
+      }, 0);
+      totalPairs = cart.reduce((sum, line) => sum + (line.presentation === "half" ? 6 : 12) * line.quantity, 0);
+      cartTotalElement.textContent = formatBs(total);
+      cartPairsElement.textContent = `${totalPairs} ${totalPairs === 1 ? "par" : "pares"} en total`;
+      whatsappLink.href = cart.length ? makeWhatsAppUrl(total) : "#";
+      whatsappLink.setAttribute("aria-disabled", cart.length ? "false" : "true");
+      whatsappLink.style.opacity = cart.length ? "1" : ".55";
+      whatsappLink.style.pointerEvents = cart.length ? "auto" : "none";
+    }
+
+    function makeWhatsAppUrl(total) {
+      const lines = [
+        "Hola, Tienda J Y C. Quiero realizar el siguiente pedido:",
+        ""
+      ];
+      for (const line of cart) {
+        const product = productById.get(line.productId);
+        const presentation = line.presentation === "half" ? "media docena" : "docena";
+        const pairs = (line.presentation === "half" ? 6 : 12) * line.quantity;
+        const unitPrice = getPrice(product, line.presentation);
+        const subtotal = unitPrice * line.quantity;
+        lines.push(
+          `- Modelo: ${product.id} (tallas ${product.sizeFrom}-${product.sizeTo})`,
+          `  Presentación: ${presentation}`,
+          `  Cantidad: ${line.quantity} ${line.quantity === 1 ? "paquete" : "paquetes"} (${pairs} pares)`,
+          `  Precio por paquete: ${formatBs(unitPrice)}`,
+          `  Subtotal: ${formatBs(subtotal)}`,
+          ""
+        );
+      }
+      lines.push(
+        `Total estimado: ${formatBs(total)}.`,
+        "",
+        "Quedo atento/a a la confirmación de disponibilidad y entrega. Gracias."
+      );
+      return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
+    }
+
+    function openCart() {
+      cartPanel.hidden = false;
+      cartOverlay.hidden = false;
+      document.body.classList.add("cart-open");
+      document.getElementById("close-cart").focus();
+    }
+
+    function closeCart() {
+      cartPanel.hidden = true;
+      cartOverlay.hidden = true;
+      document.body.classList.remove("cart-open");
+      document.getElementById("open-cart").focus();
+    }
+
+    document.getElementById("filters").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-filter]");
+      if (!button) return;
+      currentFilter = button.dataset.filter;
+      visibleLimit = PAGE_SIZE;
+      document.querySelectorAll(".filter-button").forEach((filterButton) => {
+        filterButton.setAttribute("aria-pressed", String(filterButton === button));
+      });
+      renderProducts();
+    });
+
+    showMoreButton.addEventListener("click", () => {
+      visibleLimit += PAGE_SIZE;
+      renderProducts();
+    });
+
+    document.getElementById("code-search").addEventListener("input", (event) => {
+      codeQuery = event.target.value.trim().toUpperCase().replace(/[^A-Z0-9-]/g, "");
+      visibleLimit = PAGE_SIZE;
+      renderProducts();
+    });
+
+    grid.addEventListener("error", (event) => {
+      if (event.target instanceof HTMLImageElement) {
+        event.target.closest(".photo-frame")?.classList.add("image-missing");
+        console.error(`No se pudo cargar la fotografía: ${event.target.src}`);
+      }
+    }, true);
+
+    grid.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-add]");
+      if (!button) return;
+      const productId = button.dataset.add;
+      const quantityInput = grid.querySelector(`[data-quantity="${productId}"]`);
+      const presentation = grid.querySelector(`[data-presentation="${productId}"]`).value;
+      const quantity = Number(quantityInput.value);
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 99) {
+        showToast("Indica una cantidad de paquetes entre 1 y 99.");
+        quantityInput.focus();
+        return;
+      }
+      const existingLine = cart.find((line) => line.productId === productId && line.presentation === presentation);
+      if (existingLine && existingLine.quantity + quantity > 99) {
+        showToast("Cada línea del carrito admite hasta 99 paquetes.");
+        return;
+      }
+      if (existingLine) existingLine.quantity += quantity;
+      else cart.push({ productId, presentation, quantity });
+      saveCart();
+      renderCart();
+      showToast(`${productId} se añadió al carrito.`);
+    });
+
+    cartItemsElement.addEventListener("change", (event) => {
+      const input = event.target.closest("[data-cart-quantity]");
+      if (!input) return;
+      const index = Number(input.dataset.cartQuantity);
+      const quantity = Number(input.value);
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 99) {
+        input.value = String(cart[index].quantity);
+        showToast("Indica una cantidad de paquetes entre 1 y 99.");
+        return;
+      }
+      cart[index].quantity = quantity;
+      saveCart();
+      renderCart();
+    });
+
+    cartItemsElement.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-remove]");
+      if (!button) return;
+      cart.splice(Number(button.dataset.remove), 1);
+      saveCart();
+      renderCart();
+    });
+
+    document.getElementById("open-cart").addEventListener("click", openCart);
+    document.getElementById("close-cart").addEventListener("click", closeCart);
+    cartOverlay.addEventListener("click", closeCart);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !cartPanel.hidden) closeCart();
+    });
+
+    renderProducts();
+    renderCart();
+    if (PRODUCTS.length !== PRODUCT_FILES.length) {
+      showToast("Algunas fotos no tienen precio o rango de tallas legible en el nombre y no se incluyeron.");
+    }
+  </script>
+</body>
+</html>
